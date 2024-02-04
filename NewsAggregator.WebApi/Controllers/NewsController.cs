@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using NewsAggregator.BusinessLogic.Enums;
+using NewsAggregator.BusinessLogic.Infastructure;
 using NewsAggregator.BusinessLogic.Interfaces;
 
 namespace NewsAggregator.WebApi.Controllers
@@ -42,7 +43,15 @@ namespace NewsAggregator.WebApi.Controllers
         [HttpPost]
         public async Task<IActionResult> AddNewsByRssKey(string rssKey)
         {
-            await _newsService.AddNewsByRssKey(rssKey);
+            try
+            {
+                await _newsService.AddNewsByRssKey(rssKey);
+            }
+            catch (NewsServiceException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+
             return Created();
         }
     }

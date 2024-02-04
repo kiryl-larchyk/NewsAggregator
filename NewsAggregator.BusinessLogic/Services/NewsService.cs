@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using NewsAggregator.BusinessLogic.DTO;
 using NewsAggregator.BusinessLogic.Enums;
+using NewsAggregator.BusinessLogic.Infastructure;
 using NewsAggregator.BusinessLogic.Interfaces;
 using NewsAggregator.DataAccess.Entities;
 using NewsAggregator.DataAccess.Interfaces;
@@ -22,7 +23,15 @@ namespace NewsAggregator.BusinessLogic.Services
         public async Task AddNewsByRssKey(string rssKey)
         {
             var xmlDocument = new XmlDocument();
-            xmlDocument.Load(rssKey);
+            try
+            {
+                xmlDocument.Load(rssKey);
+            }
+            catch (Exception ex)
+            {
+                throw new NewsServiceException($"Error is occured during rss key loading.", ex);
+            }
+
             var rssNodes = xmlDocument.SelectNodes("rss/channel/item");
             foreach (XmlNode rssNode in rssNodes)
             {
