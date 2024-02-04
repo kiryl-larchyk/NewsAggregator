@@ -1,0 +1,29 @@
+version: '3.4'
+
+services:
+  newsaggregator.webapi:
+    container_name: newsaggregatorwebapi
+    image: ${DOCKER_REGISTRY-}newsaggregatorwebapi
+    build:
+      context: .
+      dockerfile: NewsAggregator.WebApi/Dockerfile
+    ports:
+      - "8080:80"
+    depends_on:
+      - db
+    environment:
+      ConnectionStrings__PostgreSQLConnection: "Host=db;Database=postgres;Username=postgres;Password=postgres"
+  db:
+    container_name: db
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata: {}
